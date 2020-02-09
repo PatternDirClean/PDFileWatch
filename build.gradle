@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+version '0.0.1'
+
+sourceCompatibility = 13
+targetCompatibility = 13
+
+repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://plugins.gradle.org/m2/" }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation fileTree(dir: 'lib', includes: ['*.jar'])
+}
