@@ -9,25 +9,22 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import fybug.nulll.pdfw.Loop;
-import fybug.nulll.pdfw.WaServer;
 import fybug.nulll.pdfw.StateBack;
+import fybug.nulll.pdfw.WaServer;
 import fybug.nulll.pdfw.loopex.LoopState;
 
 import static fybug.nulll.pdfw.loopex.LoopState.WATCH_CLOSE;
 import static fybug.nulll.pdfw.loopex.LoopState.WATCH_DOME;
 import static fybug.nulll.pdfw.loopex.LoopState.WATCH_NEXT;
 
-// todo test
-
 /**
- * <h2>DepthWatch 对接处理程序.</h2>
- * 可记录每次触发的目录的父目录
+ * <h2>{@link DepthWatch} 对接处理程序.</h2>
+ * 可记录每次触发的目录的父目录<br/>
  * 新建目录自动监听
- * <p>
+ * <br/><br/>
  * 如需解除监听，请直接调用该对象的 {@link #close()}
  *
  * @author fybug
@@ -63,12 +60,14 @@ class DepthLoop extends Loop<DepthWatch, DepthLoop> {
         // 自动解除监听
         addCall(StandardWatchEventKinds.ENTRY_DELETE, (event, pa) -> {
             var path = Path.of(pa, event.context().toString());
-            var key = parhToKey(path.toString());
+            var key = parent.parhToKey(path.toString());
             // 移除
             if (key != null) {
-                keyList.remove(key);
-                key.cancel();
-                parent.removeLoop(key);
+                LOCK.write(() -> {
+                    keyList.remove(key);
+                    key.cancel();
+                    parent.removeLoop(key);
+                });
             }
             return WATCH_NEXT;
         });
@@ -76,41 +75,33 @@ class DepthLoop extends Loop<DepthWatch, DepthLoop> {
 
     //----------------------------------------------------------------------------------------------
 
-    void binKey(WatchKey key) {keyList.add(key);}
+    void binKey(WatchKey key) { LOCK.write(() -> keyList.add(key)); }
 
+    /** 根据监控键获取路径 */
     protected
-    String keyToPath(WatchKey key) {return parent.pathmap.get(key);}
-
-    protected
-    WatchKey parhToKey(String path) {
-        if (parent.keysmap.containsKey(path))
-            return parent.keysmap.get(path);
-        return null;
-    }
+    String keyToPath(WatchKey key) { return parent.keyToPath(key); }
 
     //----------------------------------------------------------------------------------------------
 
     @Override
     protected
     LoopState runcall(WatchKey key, WatchEvent<?> event, Stream<StateBack> stream) {
-        var state = new AtomicReference<>(LoopState.WATCH_NEXT);
+        var state = new LoopState[]{LoopState.WATCH_NEXT};
         // 运行处理事件
         stream.anyMatch(v -> {
-            var st = v.apply(event, keyToPath(key));
-            state.set(st);
+            var st = v.apply(event, parent.keyToPath(key));
+            state[0] = st;
             return st == WATCH_DOME || st == WATCH_CLOSE;
         });
-        return state.get();
+        return state[0];
     }
 
-    // get Path
     //----------------------------------------------------------------------------------------------
 
     @Override
     public @NotNull
     String toPath() { return rootPath; }
 
-    // Close
     //----------------------------------------------------------------------------------------------
 
     @Override

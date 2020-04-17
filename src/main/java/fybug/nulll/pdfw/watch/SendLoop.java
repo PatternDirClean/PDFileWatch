@@ -22,7 +22,7 @@ import static fybug.nulll.pdfw.loopex.LoopState.WATCH_DOME;
  *
  * @author fybug
  * @version 0.0.1
- * @since PDFileWatch 0.0.1
+ * @since watch 0.0.1
  */ // todo build
 public
 class SendLoop extends Loop<SendWatch, SendLoop> {

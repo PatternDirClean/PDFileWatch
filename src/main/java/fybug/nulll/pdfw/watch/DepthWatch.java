@@ -16,17 +16,17 @@ import fybug.nulll.pdfw.loopex.DepthFile;
 import fybug.nulll.pdfw.loopex.SendDir;
 import fybug.nulll.pdfw.loopex.SendFile;
 
-// todo test
 
 /**
  * <h2>深度路径监控服务.</h2>
- * 监控一组路径，每一个路径的子路径都会被监控，后续新建的路径也会被监控
- * 每一个路径对应一个 {@link DepthLoop}
+ * 监控一组路径，每一个路径对应一个 {@link DepthLoop}<br/>
+ * 每一个路径的子路径都会被监控，后续新建的路径也会被监控
  *
  * @author fybug
  * @version 0.0.1
- * @since PDFileWatch 0.0.1
- */
+ * @since watch 0.0.1
+ * todo test
+ */ // todo build
 public
 class DepthWatch extends WaServer<DepthLoop> {
     // 路径映射
@@ -52,6 +52,7 @@ class DepthWatch extends WaServer<DepthLoop> {
     @NotNull
     public final
     DepthLoop watchDir(@NotNull Path path) throws IOException {
+        checkClose();
         var loop = new DepthLoop(this, path);
         forpath(loop, path, WaServer.KINDS_ALL);
         return loop;
@@ -72,6 +73,7 @@ class DepthWatch extends WaServer<DepthLoop> {
     @NotNull
     public final
     DepthLoop checkDir(@NotNull Path path) throws IOException {
+        checkClose();
         var loop = new DepthDir(this, path);
         forpath(loop, path, WaServer.KINDS_ALL);
         return loop;
@@ -92,6 +94,7 @@ class DepthWatch extends WaServer<DepthLoop> {
     @NotNull
     public final
     DepthLoop checkFil(@NotNull Path path) throws IOException {
+        checkClose();
         var loop = new DepthFile(this, path);
         forpath(loop, path, WaServer.KINDS_ALL);
         return loop;
@@ -106,7 +109,7 @@ class DepthWatch extends WaServer<DepthLoop> {
                  // 过滤出目录
                  .filter(v -> Files.isDirectory(v))
                  // 绑定监听
-                 .forEach(v -> {
+                 .forEach(v -> LOCK.write(() -> {
                      try {
                          // 绑定监听
                          var key = watchPath(v, kinds);
@@ -120,7 +123,7 @@ class DepthWatch extends WaServer<DepthLoop> {
                      } catch ( IOException e ) {
                          throw new errors(e.getMessage());
                      }
-                 });
+                 }));
         } catch ( errors error ) {
             throw new IOException(error.getMessage());
         }
@@ -128,10 +131,24 @@ class DepthWatch extends WaServer<DepthLoop> {
 
     /** 移除当前处理程序 */
     void removeLoop(WatchKey key) {
-        keymap.remove(key);
-        if (pathmap.containsKey(key))
-            keysmap.remove(pathmap.remove(key));
+        LOCK.write(() -> {
+            keymap.remove(key);
+            if (pathmap.containsKey(key))
+                keysmap.remove(pathmap.remove(key));
+        });
     }
+
+    /** 根据路径获取监控键 */
+    WatchKey parhToKey(String path) {
+        return LOCK.read(() -> {
+            if (keysmap.containsKey(path))
+                return keysmap.get(path);
+            return null;
+        });
+    }
+
+    /** 根据监控键获取路径 */
+    String keyToPath(WatchKey key) {return LOCK.read(() -> pathmap.get(key));}
 
     //----------------------------------------------------------------------------------------------
 
