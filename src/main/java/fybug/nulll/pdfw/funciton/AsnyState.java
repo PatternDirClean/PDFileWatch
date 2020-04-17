@@ -1,15 +1,17 @@
 package fybug.nulll.pdfw.funciton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.WatchEvent;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
-import fybug.nulll.pdfw.LoopState;
+import fybug.nulll.pdfw.StateBack;
+import fybug.nulll.pdfw.loopex.LoopState;
 
-import static fybug.nulll.pdfw.LoopState.WATCH_NEXT;
+import static fybug.nulll.pdfw.loopex.LoopState.WATCH_NEXT;
 
 /**
  * <h2>异步处理接口.</h2>
@@ -25,17 +27,15 @@ import static fybug.nulll.pdfw.LoopState.WATCH_NEXT;
  */
 public final
 class AsnyState implements StateBack {
-    // 全局默认线程池
-    private final static ExecutorService DEFA_POLP = Executors.newCachedThreadPool();
     // 回调
     private final BiConsumer<WatchEvent<?>, String>[] fun;
     // 线程池
-    private final ExecutorService POLP;
+    private final Optional<ExecutorService> POLP;
 
     private
     AsnyState(BiConsumer<WatchEvent<?>, String>[] consumers, ExecutorService po) {
         fun = consumers;
-        POLP = po;
+        POLP = Optional.ofNullable(po);
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -43,7 +43,8 @@ class AsnyState implements StateBack {
     @Override
     public
     LoopState apply(WatchEvent<?> event, String path) {
-        POLP.submit(() -> Arrays.stream(fun).forEach(v -> v.accept(event, path)));
+        Runnable run = () -> Arrays.stream(fun).forEach(v -> v.accept(event, path));
+        POLP.ifPresentOrElse(p -> p.submit(run), () -> new Thread(run).start());
         return WATCH_NEXT;
     }
 
@@ -54,13 +55,13 @@ class AsnyState implements StateBack {
     @NotNull
     public static
     AsnyState asnystate(@NotNull BiConsumer<WatchEvent<?>, String>... consumers)
-    { return asnystate(DEFA_POLP, consumers); }
+    { return asnystate(null, consumers); }
 
     /** 创建并传入回调链和池 */
     @SafeVarargs
     @NotNull
     public static
-    AsnyState asnystate(@NotNull ExecutorService po,
+    AsnyState asnystate(@Nullable ExecutorService po,
                         @NotNull BiConsumer<WatchEvent<?>, String>... consumers)
     { return new AsnyState(consumers.clone(), po); }
 }

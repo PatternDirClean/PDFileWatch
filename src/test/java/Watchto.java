@@ -8,7 +8,7 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 
 import fybug.nulll.pdfw.FW;
-import fybug.nulll.pdfw.SendWatch;
+import fybug.nulll.pdfw.watch.SendWatch;
 
 import static fybug.nulll.pdfw.funciton.NextState.nextstate;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;

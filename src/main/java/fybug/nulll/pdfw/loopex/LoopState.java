@@ -1,4 +1,5 @@
-package fybug.nulll.pdfw;
+package fybug.nulll.pdfw.loopex;
+import java.nio.file.WatchEvent;
 
 /**
  * <h2>回调状态.</h2>
@@ -12,8 +13,8 @@ public
 enum LoopState {
     /** 继续处理 */
     WATCH_NEXT,
-    /** 中断处理 */
+    /** 中断处理，中断调用链 */
     WATCH_DOME,
-    /** 对线关闭 */
+    /** 对象关闭，中断调用链以及本次 {@link WatchEvent} 处理 */
     WATCH_CLOSE
 }

@@ -1,4 +1,4 @@
-package fybug.nulll.pdfw;
+package fybug.nulll.pdfw.watch;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 
+import fybug.nulll.pdfw.WaServer;
 import fybug.nulll.pdfw.loopex.DepthDir;
 import fybug.nulll.pdfw.loopex.DepthFile;
 import fybug.nulll.pdfw.loopex.SendDir;
@@ -34,6 +35,7 @@ class DepthWatch extends WaServer<DepthLoop> {
 
     //----------------------------------------------------------------------------------------------
 
+    public
     DepthWatch(ExecutorService executorService) throws IOException { super(executorService); }
 
     //----------------------------------------------------------------------------------------------

@@ -3,8 +3,8 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 
-import fybug.nulll.pdfw.SendLoop;
-import fybug.nulll.pdfw.SendWatch;
+import fybug.nulll.pdfw.watch.SendLoop;
+import fybug.nulll.pdfw.watch.SendWatch;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;

@@ -5,7 +5,8 @@ import java.nio.file.WatchEvent;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 
-import fybug.nulll.pdfw.LoopState;
+import fybug.nulll.pdfw.StateBack;
+import fybug.nulll.pdfw.loopex.LoopState;
 
 /**
  * <h2>预处理接口.</h2>

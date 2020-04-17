@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import fybug.nulll.pdfw.watch.DepthWatch;
+import fybug.nulll.pdfw.watch.SendWatch;
+import lombok.experimental.UtilityClass;
+
 /**
  * <h2>文件监控启动工具.</h2>
  * 使用该类可以创建监控服务
@@ -13,6 +17,7 @@ import java.util.concurrent.Executors;
  * @version 0.0.1
  * @since PDFileWatch 0.0.1
  */
+@UtilityClass
 public
 class FW {
     /**
@@ -25,7 +30,7 @@ class FW {
      * @see SendWatch
      */
     @NotNull
-    public static
+    public
     SendWatch sendWatch(@NotNull ExecutorService executorService) throws IOException
     { return new SendWatch(executorService); }
 
@@ -38,7 +43,7 @@ class FW {
      * @see SendWatch
      */
     @NotNull
-    public static
+    public
     SendWatch sendWatch() throws IOException
     { return new SendWatch(Executors.newSingleThreadExecutor());}
 
@@ -53,7 +58,7 @@ class FW {
      *
      * @see DepthWatch
      */
-    public static
+    public
     DepthWatch depthWatch(@NotNull ExecutorService executorService) throws IOException
     {return new DepthWatch(executorService);}
 
@@ -65,7 +70,7 @@ class FW {
      *
      * @see DepthWatch
      */
-    public static
+    public
     DepthWatch depthWatch() throws IOException
     {return new DepthWatch(Executors.newSingleThreadExecutor());}
 }

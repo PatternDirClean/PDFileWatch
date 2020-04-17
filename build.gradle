@@ -7,19 +7,36 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
-version '0.0.1'
+group 'fybug.nulll'
+version = '0.0.1'
+sourceCompatibility = '13'
+targetCompatibility = '13'
 
-sourceCompatibility = 13
-targetCompatibility = 13
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
 
 repositories {
-    jcenter()
     mavenLocal()
-    mavenCentral()
-    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "https://maven.aliyun.com/repository/jcenter" }
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation fileTree(dir: 'lib', includes: ['*.jar'])
+    compile "org.jetbrains:annotations:17.0.0"
+    compile "org.projectlombok:lombok:1.18.8"
+    annotationProcessor "org.projectlombok:lombok:1.18.8"
+}
+
+test {
+    dependencies {
+        testCompile "junit:junit:4.12"
+    }
+    useJUnitPlatform()
 }

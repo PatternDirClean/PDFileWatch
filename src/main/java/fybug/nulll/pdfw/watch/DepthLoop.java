@@ -1,4 +1,4 @@
-package fybug.nulll.pdfw;
+package fybug.nulll.pdfw.watch;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -12,11 +12,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
-import fybug.nulll.pdfw.funciton.StateBack;
+import fybug.nulll.pdfw.Loop;
+import fybug.nulll.pdfw.WaServer;
+import fybug.nulll.pdfw.StateBack;
+import fybug.nulll.pdfw.loopex.LoopState;
 
-import static fybug.nulll.pdfw.LoopState.WATCH_CLOSE;
-import static fybug.nulll.pdfw.LoopState.WATCH_DOME;
-import static fybug.nulll.pdfw.LoopState.WATCH_NEXT;
+import static fybug.nulll.pdfw.loopex.LoopState.WATCH_CLOSE;
+import static fybug.nulll.pdfw.loopex.LoopState.WATCH_DOME;
+import static fybug.nulll.pdfw.loopex.LoopState.WATCH_NEXT;
 
 // todo test
 
@@ -40,7 +43,7 @@ class DepthLoop extends Loop<DepthWatch, DepthLoop> {
 
     //----------------------------------------------------------------------------------------------
 
-    protected
+    public
     DepthLoop(DepthWatch ws, Path rootpath) {
         super(ws);
         this.rootPath = rootpath.toAbsolutePath().toString();

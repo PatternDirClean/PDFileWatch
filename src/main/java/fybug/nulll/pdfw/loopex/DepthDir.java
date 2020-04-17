@@ -4,8 +4,8 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 
-import fybug.nulll.pdfw.DepthLoop;
-import fybug.nulll.pdfw.DepthWatch;
+import fybug.nulll.pdfw.watch.DepthLoop;
+import fybug.nulll.pdfw.watch.DepthWatch;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
