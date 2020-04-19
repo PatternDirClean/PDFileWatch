@@ -8,9 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Condition;
 
@@ -60,7 +60,7 @@ class WaServer<L extends Loop<?, ?>> implements Closeable {
     private volatile Thread thread;
 
     // 处理对象映射
-    protected final Map<WatchKey, L> keymap = new ConcurrentHashMap<>();
+    protected final Map<WatchKey, L> keymap = new HashMap<>();
 
     // 是否关闭
     private boolean isClose = false;

@@ -29,7 +29,7 @@ import static fybug.nulll.pdfw.loopex.LoopState.WATCH_NEXT;
  *
  * @author fybug
  * @version 0.0.1
- * @since PDFileWatch 0.0.1
+ * @since watch 0.0.1
  */
 public
 class DepthLoop extends Loop<DepthWatch, DepthLoop> {
@@ -40,7 +40,7 @@ class DepthLoop extends Loop<DepthWatch, DepthLoop> {
 
     //----------------------------------------------------------------------------------------------
 
-    public
+    protected
     DepthLoop(DepthWatch ws, Path rootpath) {
         super(ws);
         this.rootPath = rootpath.toAbsolutePath().toString();

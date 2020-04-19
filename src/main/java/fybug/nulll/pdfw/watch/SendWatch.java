@@ -6,16 +6,18 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 
 import fybug.nulll.pdfw.WaServer;
 import fybug.nulll.pdfw.loopex.FileSend;
 import fybug.nulll.pdfw.loopex.SendDir;
 import fybug.nulll.pdfw.loopex.SendFile;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
@@ -32,9 +34,9 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 public
 class SendWatch extends WaServer<SendLoop> {
     // 当前监听的路径
-    final Set<String> WathcPath = new CopyOnWriteArraySet<>();
+    final Set<String> WathcPath = new HashSet<>();
     // 触发过的路径，父目录 -> 子目录
-    final Map<String, String> watchSeet = new ConcurrentHashMap<>();
+    final Map<String, String> watchSeet = new HashMap<>();
 
     //----------------------------------------------------------------------------------------------
 
@@ -186,5 +188,32 @@ class SendWatch extends WaServer<SendLoop> {
         super.close0();
         WathcPath.clear();
         watchSeet.clear();
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+
+    /** 获取构造工具 */
+    @NotNull
+    public static
+    Build build() { return new Build(); }
+
+    /**
+     * <h2>监听服务构造工具.</h2>
+     * 使用 {@link #pool(ExecutorService)} 修改监听用的线程池
+     *
+     * @author fybug
+     * @version 0.0.1
+     * @since SendWatch 0.0.1
+     */
+    @Accessors( fluent = true, chain = true )
+    public static final
+    class Build {
+        /** 监听执行的线程池 */
+        @Setter private ExecutorService pool = null;
+
+        /** 构造监听服务 */
+        @NotNull
+        public
+        SendWatch build() throws IOException {return new SendWatch(pool);}
     }
 }

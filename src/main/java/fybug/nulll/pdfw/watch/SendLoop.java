@@ -23,7 +23,7 @@ import static fybug.nulll.pdfw.loopex.LoopState.WATCH_DOME;
  * @author fybug
  * @version 0.0.1
  * @since watch 0.0.1
- */ // todo build
+ */
 public
 class SendLoop extends Loop<SendWatch, SendLoop> {
     // 当前注册的 key
@@ -33,7 +33,7 @@ class SendLoop extends Loop<SendWatch, SendLoop> {
 
     //----------------------------------------------------------------------------------------------
 
-    public
+    protected
     SendLoop(WatchKey key, SendWatch ws, Path path) {
         super(ws);
         KEY = key;

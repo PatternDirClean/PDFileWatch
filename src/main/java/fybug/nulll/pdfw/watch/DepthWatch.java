@@ -6,8 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
 import fybug.nulll.pdfw.WaServer;
@@ -15,6 +14,8 @@ import fybug.nulll.pdfw.loopex.DepthDir;
 import fybug.nulll.pdfw.loopex.DepthFile;
 import fybug.nulll.pdfw.loopex.SendDir;
 import fybug.nulll.pdfw.loopex.SendFile;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 
 /**
@@ -26,12 +27,12 @@ import fybug.nulll.pdfw.loopex.SendFile;
  * @version 0.0.1
  * @since watch 0.0.1
  * todo test
- */ // todo build
+ */
 public
 class DepthWatch extends WaServer<DepthLoop> {
     // 路径映射
-    final ConcurrentMap<WatchKey, String> pathmap = new ConcurrentHashMap<>();
-    final ConcurrentMap<String, WatchKey> keysmap = new ConcurrentHashMap<>();
+    final HashMap<WatchKey, String> pathmap = new HashMap<>();
+    final HashMap<String, WatchKey> keysmap = new HashMap<>();
 
     //----------------------------------------------------------------------------------------------
 
@@ -166,5 +167,32 @@ class DepthWatch extends WaServer<DepthLoop> {
     class errors extends RuntimeException {
         public
         errors(String message) { super(message); }
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+
+    /** 获取构造工具 */
+    @NotNull
+    public static
+    Build build() { return new Build(); }
+
+    /**
+     * <h2>监听服务构造工具.</h2>
+     * 使用 {@link #pool(ExecutorService)} 修改监听用的线程池
+     *
+     * @author fybug
+     * @version 0.0.1
+     * @since DepthWatch 0.0.1
+     */
+    @Accessors( fluent = true, chain = true )
+    public static final
+    class Build {
+        /** 监听执行的线程池 */
+        @Setter private ExecutorService pool = null;
+
+        /** 构造监听服务 */
+        @NotNull
+        public
+        DepthWatch build() throws IOException {return new DepthWatch(pool);}
     }
 }
