@@ -1,3 +1,4 @@
+package fybug.nulll.pdfw;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -5,8 +6,10 @@ import java.io.File;
 import java.io.StringWriter;
 import java.nio.file.Path;
 
+import fybug.nulll.pdfw.watch.watchTest;
+
 @RunWith( Suite.class )
-@Suite.SuiteClasses( {Watchto.class, Checkto.class} )
+@Suite.SuiteClasses( {watchTest.class} )
 public
 class RunTest {
     public final static File ROOT = new File("").getAbsoluteFile();
@@ -24,7 +27,7 @@ class RunTest {
     void writeMark(String s) {
         outMark.write(s);
         try {
-            Thread.sleep(300);
+            Thread.sleep(100);
         } catch ( InterruptedException ignored ) {
         }
     }

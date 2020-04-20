@@ -117,7 +117,7 @@ class WaServer<L extends Loop<?, ?>> implements Closeable {
             } finally {
                 LOCK.write(() -> {
                     isClose = true;
-                    LOCK.getLOCK().notifyAll();
+                    WAIT.signalAll();
                 });
             }
         };
@@ -168,7 +168,8 @@ class WaServer<L extends Loop<?, ?>> implements Closeable {
     protected
     void close0() {
         // clear
-        keymap.forEach((k, v) -> v.close());
+        for ( Object v : keymap.values().toArray() )
+            ((L) v).close();
         keymap.clear();
     }
 

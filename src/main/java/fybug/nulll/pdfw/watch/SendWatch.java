@@ -26,6 +26,26 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
  * 监控一组路径，每个路径对应一个 {@link SendLoop} <br/>
  * 只监控声明的路径，子路径不监控<br/>
  * 父目录被监控时，子目录被修改的事件不会往上传
+ * <br/><br/>
+ * <pre>使用示例：
+ *     public static
+ *     void main(String[] args) {
+ *         SendWatch sendWatch;
+ *         SendLoop loop;
+ *
+ *         try {
+ *             sendWatch = PDFileWatch.sendWatch().build();
+ *             // 注册，监听单个文件路径的所有事件
+ *             loop = sendWatch.watchFil(Path.of("a.tmp"), WaServer.KINDS_ALL);
+ *             // 监听创建事件回调
+ *             loop.addCall(ENTRY_CREATE, (event, path) -> LoopState.WATCH_NEXT);
+ *             // 监听默认回调
+ *             loop.addDefaCall((event, path) -> LoopState.WATCH_NEXT);
+ *         } catch ( IOException e ) {
+ *             e.printStackTrace();
+ *         }
+ *     }
+ * </pre>
  *
  * @author fybug
  * @version 0.0.1
@@ -85,8 +105,8 @@ class SendWatch extends WaServer<SendLoop> {
     @SafeVarargs
     @NotNull
     public final
-    SendLoop watchFil(@NotNull Path path, WatchEvent.Kind<Path>... kind) throws IOException {
-        return LOCK.trywrite(IOException.class, () -> {
+    FileSend watchFil(@NotNull Path path, WatchEvent.Kind<Path>... kind) throws IOException {
+        return (FileSend) LOCK.trywrite(IOException.class, () -> {
             checkClose();
             // 注册后的 key
             var key = watchPath(path.toAbsolutePath().getParent(), kind);
@@ -95,7 +115,7 @@ class SendWatch extends WaServer<SendLoop> {
     }
 
     /**
-     * 监听目录下的目录变更
+     * 监听该目录下的子目录的事件
      * <p>
      * 删除事件无法判断类型
      *
@@ -110,8 +130,8 @@ class SendWatch extends WaServer<SendLoop> {
     @SafeVarargs
     @NotNull
     public final
-    SendLoop checkDir(@NotNull Path path, WatchEvent.Kind<Path>... kind) throws IOException {
-        return LOCK.trywrite(IOException.class, () -> {
+    SendDir checkDir(@NotNull Path path, WatchEvent.Kind<Path>... kind) throws IOException {
+        return (SendDir) LOCK.trywrite(IOException.class, () -> {
             checkClose();
             // 注册后的 key
             var key = watchPath(path.toAbsolutePath(), kind);
@@ -120,7 +140,7 @@ class SendWatch extends WaServer<SendLoop> {
     }
 
     /**
-     * 监听目录下的文件变更
+     * 监听目录下的子文件的事件
      * <p>
      * 删除事件无法判断类型
      *
@@ -135,8 +155,8 @@ class SendWatch extends WaServer<SendLoop> {
     @SafeVarargs
     @NotNull
     public final
-    SendLoop checkFil(@NotNull Path path, WatchEvent.Kind<Path>... kind) throws IOException {
-        return LOCK.trywrite(IOException.class, () -> {
+    SendFile checkFil(@NotNull Path path, WatchEvent.Kind<Path>... kind) throws IOException {
+        return (SendFile) LOCK.trywrite(IOException.class, () -> {
             checkClose();
             // 注册后的 key
             var key = watchPath(path.toAbsolutePath(), kind);

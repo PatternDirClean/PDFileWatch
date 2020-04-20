@@ -9,24 +9,47 @@ import java.nio.file.WatchKey;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
+import fybug.nulll.pdfw.PDFileWatch;
 import fybug.nulll.pdfw.WaServer;
 import fybug.nulll.pdfw.loopex.DepthDir;
 import fybug.nulll.pdfw.loopex.DepthFile;
+import fybug.nulll.pdfw.loopex.LoopState;
 import fybug.nulll.pdfw.loopex.SendDir;
 import fybug.nulll.pdfw.loopex.SendFile;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+
 
 /**
  * <h2>深度路径监控服务.</h2>
  * 监控一组路径，每一个路径对应一个 {@link DepthLoop}<br/>
- * 每一个路径的子路径都会被监控，后续新建的路径也会被监控
+ * 每一个路径的子路径都会被监控，后续新建的路径也会被监控，删除事件不会往上传。
+ * <br/><br/>
+ * <pre>使用示例：
+ *     public static
+ *     void main(String[] args) {
+ *         DepthWatch depthWatch;
+ *         DepthLoop loop;
+ *
+ *         try {
+ *             depthWatch = PDFileWatch.depthWatch().build();
+ *             // 注册，监听目录以及子内容的所有事件
+ *             loop = depthWatch.watchDir(Path.of("tmp/"));
+ *             // 监听创建事件回调
+ *             loop.addCall(ENTRY_CREATE, (event, path) -> LoopState.WATCH_NEXT);
+ *             // 监听默认回调
+ *             loop.addDefaCall((event, path) -> LoopState.WATCH_NEXT);
+ *         } catch ( IOException e ) {
+ *             e.printStackTrace();
+ *         }
+ *     }
+ * </pre>
  *
  * @author fybug
  * @version 0.0.1
  * @since watch 0.0.1
- * todo test
  */
 public
 class DepthWatch extends WaServer<DepthLoop> {
@@ -60,7 +83,7 @@ class DepthWatch extends WaServer<DepthLoop> {
     }
 
     /**
-     * 监听目录下的目录变更
+     * 监听该目录下的子目录的事件
      * <p>
      * 删除事件无法判断类型
      *
@@ -73,7 +96,7 @@ class DepthWatch extends WaServer<DepthLoop> {
      */
     @NotNull
     public final
-    DepthLoop checkDir(@NotNull Path path) throws IOException {
+    DepthDir checkDir(@NotNull Path path) throws IOException {
         checkClose();
         var loop = new DepthDir(this, path);
         forpath(loop, path, WaServer.KINDS_ALL);
@@ -81,7 +104,7 @@ class DepthWatch extends WaServer<DepthLoop> {
     }
 
     /**
-     * 监听目录下的文件变更
+     * 监听目录下的子文件的事件
      * <p>
      * 删除事件无法判断类型
      *
@@ -94,7 +117,7 @@ class DepthWatch extends WaServer<DepthLoop> {
      */
     @NotNull
     public final
-    DepthLoop checkFil(@NotNull Path path) throws IOException {
+    DepthFile checkFil(@NotNull Path path) throws IOException {
         checkClose();
         var loop = new DepthFile(this, path);
         forpath(loop, path, WaServer.KINDS_ALL);
