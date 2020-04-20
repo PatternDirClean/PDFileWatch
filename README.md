@@ -22,7 +22,7 @@
 依赖的同系列的项目
 - [PDConcurrent](https://gitee.com/PatternDirClean/PDConcurrent)
 
-可通过 **WIKI** 或者 **测试类** 查看示例
+可通过 **WIKI**、**java doc** 或者 **测试类** 查看示例
 
 ## 分支说明
 **dev-master**：当前的开发分支，可以拿到最新的每夜版 jar
