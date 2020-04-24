@@ -9,8 +9,5 @@
  * @author fybug
  * @version 0.0.1
  * @since JDK 13
- * todo icon
- * todo readme.md
- * todo wiki
  */
 package fybug.nulll.pdfw;

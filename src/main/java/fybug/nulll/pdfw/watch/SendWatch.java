@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.HashMap;
@@ -12,8 +13,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import fybug.nulll.pdfw.PDFileWatch;
 import fybug.nulll.pdfw.WaServer;
 import fybug.nulll.pdfw.loopex.FileSend;
+import fybug.nulll.pdfw.loopex.LoopState;
 import fybug.nulll.pdfw.loopex.SendDir;
 import fybug.nulll.pdfw.loopex.SendFile;
 import lombok.Setter;
@@ -53,6 +56,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
  */
 public
 class SendWatch extends WaServer<SendLoop> {
+
     // 当前监听的路径
     final Set<String> WathcPath = new HashSet<>();
     // 触发过的路径，父目录 -> 子目录
