@@ -11,37 +11,49 @@
 
 ## 简介
 
-文件系统监听工具，用于监听文件系统的变化，并使用回调处理。<br/>
-可进行深度监听，回调使用链式处理。
+java 文件监听服务库，用与快速创建监听文件和目录变化的服务
 
-## 使用方法
-
-### 示例
+## 快速使用
 监听单个文件
 ```java
 public class Main {
     public static void main(String[] arg) {
         SendWatch sendWatch;
         SendLoop loop;
-        
+
         try {
+            // 构建监听服务
             sendWatch = PDFileWatch.sendWatch().build();
-        
-            // 注册，监听单个文件路径的所有事件
+
+            // 注册，监听单个文件的所有事件，返回本次监听的实例
+            // WaServer.KINDS_ALL 是一个数组，包含所有的 WatchEvent.Kind 事件，除了 OVERFLOW
             loop = sendWatch.watchFil(Path.of("a.tmp"), WaServer.KINDS_ALL);
-        
-            // 监听创建事件回调
-            loop.addCall(StandardWatchEventKinds.ENTRY_CREATE, (event, path) -> LoopState.WATCH_NEXT);
-        
-            // 监听默认回调
-            loop.addDefaCall((event, path) -> LoopState.WATCH_NEXT);
+
+            // 监听创建事件回调，允许多个回调按顺序触发，内部有一个回调链
+            loop.addCall(StandardWatchEventKinds.ENTRY_CREATE, (event, path) -> {
+                // 事件触发处理
+                // 允许回调链向下继续触发
+                return LoopState.WATCH_NEXT;
+            });
+
+            // 监听默认回调，如果当前触发的事件没有注册对应的回调进行处理，则会触发该回调链
+            loop.addDefaCall((event, path) -> {
+                // 事件触发回调
+                // 允许继续触发
+                return LoopState.WATCH_NEXT;
+            });
+
+            // 不需要继续监听时记得关闭当前监听实例
+            loop.close();
+            // 不需要进行任何文件监听时记得关掉该服务
+            sendWatch.close();
         } catch ( IOException e ) {
             e.printStackTrace();
         }
     }
 }
 ```
-
+> 内部已有并发处理，启动服务后会有一个线程再后面负责监听系统传来的变化，所以在不需要时记得 `close()` 服务和监听对象
 ### 导入
 请导入其 `jar` 文件,文件在 **发行版** 或项目的 **jar** 文件夹下可以找到
 
