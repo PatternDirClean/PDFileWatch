@@ -5,6 +5,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
@@ -43,7 +44,13 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 @SuppressWarnings( "unchecked" )
 public abstract
 class WaServer<L extends Loop<?, ?>> implements Closeable {
-    /** 监听全部事件 */
+    /**
+     * 监听全部事件
+     *
+     * @see StandardWatchEventKinds#ENTRY_CREATE
+     * @see StandardWatchEventKinds#ENTRY_MODIFY
+     * @see StandardWatchEventKinds#ENTRY_DELETE
+     */
     public final static WatchEvent.Kind<Path>[] KINDS_ALL =
             new WatchEvent.Kind[]{ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE};
 

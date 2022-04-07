@@ -34,6 +34,10 @@ class DepthWatchTest {
     void tearDown() throws Exception {
         watch.close();
         Files.deleteIfExists(RunTest.tmpD);
+        System.out.println("out: " + RunTest.out.toString());
+        System.out.println("outMark: " + RunTest.outMark.toString());
+        System.out.println();
+        System.out.println();
         // 校验
         Assert.assertEquals(RunTest.out.toString(), RunTest.outMark.toString());
     }

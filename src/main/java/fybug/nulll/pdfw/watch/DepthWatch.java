@@ -9,18 +9,13 @@ import java.nio.file.WatchKey;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
-import fybug.nulll.pdfw.PDFileWatch;
 import fybug.nulll.pdfw.WaServer;
 import fybug.nulll.pdfw.loopex.DepthDir;
 import fybug.nulll.pdfw.loopex.DepthFile;
-import fybug.nulll.pdfw.loopex.LoopState;
 import fybug.nulll.pdfw.loopex.SendDir;
 import fybug.nulll.pdfw.loopex.SendFile;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-
 
 /**
  * <h2>深度路径监控服务.</h2>
