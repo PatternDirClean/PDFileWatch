@@ -11,6 +11,11 @@ import fybug.nulll.pdfw.loopex.LoopState;
  * 可返回 {@link LoopState} 作为状态的回调<br/>
  * 可使用 {@link NextState} 默认声明为 {@link LoopState#WATCH_NEXT}<br/>
  * 可使用 {@link AsnyState} 采取异步运行回调，默认声明为 {@link LoopState#WATCH_NEXT}
+ * <br/><br/>
+ * WatchEvent<?> 为 java 文件监控触发的事件对象<br/>
+ * String 为当前触发的路径<br/>
+ * LoopState 为必须要返回的状态
+ * <br/><br/>
  *
  * @author fybug
  * @version 0.0.1

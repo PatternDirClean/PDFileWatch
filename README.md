@@ -1,8 +1,11 @@
+<p align="center">
+<img src="https://images.gitee.com/uploads/images/2022/0407/141919_68cf644b_2071767.png" width="199" height="210" alt="Icon"/>
+
 # PDFileWatch
 
 ![java library](https://img.shields.io/badge/type-Libary-gr.svg "type")
-![JDK 13](https://img.shields.io/badge/JDK-13-green.svg "SDK")
-![Gradle 6.0.1](https://img.shields.io/badge/Gradle-6.0.1-04303b.svg "tool")
+![JDK 14](https://img.shields.io/badge/JDK-14-green.svg "SDK")
+![Gradle 6.5](https://img.shields.io/badge/Gradle-6.5-04303b.svg "tool")
 ![Apache 2](https://img.shields.io/badge/license-Apache%202-blue.svg "License")
 
 -- [Java Doc](https://apidoc.gitee.com/PatternDirClean/PDFileWatch) --
@@ -57,12 +60,16 @@ public class Main {
 ### 导入
 请导入其 `jar` 文件,文件在 **发行版** 或项目的 **jar** 文件夹下可以找到
 
+> PDFileWatch_bin.jar 为包含了依赖库的包，PDFileWatch.jar 为不包含依赖库的包
+
 **发行版中可以看到全部版本<br/>项目下的 jar 文件夹是当前最新的每夜版**
 
 依赖的同系列的项目
 - [PDConcurrent](https://gitee.com/PatternDirClean/PDConcurrent)
 
 可通过 **WIKI**、**java doc** 或者 **测试类** 查看示例
+
+测试类建议由 `RunTest` 到 `SendWatchTest` 测试类开始看
 
 ## 分支说明
 **dev-master**：当前的开发分支，可以拿到最新的每夜版 jar
