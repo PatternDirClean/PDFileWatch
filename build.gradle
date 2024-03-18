@@ -40,14 +40,86 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'lib', includes: ['*.jar'])
-    compile "org.jetbrains:annotations:17.0.0"
-    compile "org.projectlombok:lombok:1.18.10"
+    compileOnly "org.jetbrains:annotations:17.0.0"
+    compileOnly "org.projectlombok:lombok:1.18.10"
     annotationProcessor "org.projectlombok:lombok:1.18.10"
+
+    testCompile "junit:junit:4.12"
+    testCompileOnly "org.jetbrains:annotations:17.0.0"
+    testCompileOnly "org.projectlombok:lombok:1.18.10"
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.10"
 }
 
-test {
-    dependencies {
-        testCompile "junit:junit:4.12"
+task PDFileWatch(type: Jar) {
+    destinationDirectory = file('jar')
+    manifest {
+        attributes(
+                'Manifest-Version': '1.0',
+                'Built-By': 'fybug/风雨bu改',
+                'Created-By': 'IntelliJ IDEA'
+        )
     }
-    useJUnitPlatform()
+    archiveFileName = 'PDFileWatch.jar'
+    // 打包编译输出
+    from sourceSets.main.output
+}
+
+task PDFileWatch_bin(type: Jar) {
+    destinationDirectory = file('jar')
+    manifest {
+        attributes(
+                'Manifest-Version': '1.0',
+                'Built-By': 'fybug/风雨bu改',
+                'Created-By': 'IntelliJ IDEA'
+        )
+    }
+    archiveFileName = 'PDFileWatch_bin.jar'
+    // 打包编译输出
+    from sourceSets.main.output
+    from {
+        // implementation 相关的引入解压并打包入新的jar中
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task PDFileWatch_all(type: Jar) {
+    destinationDirectory = file('jar')
+    manifest {
+        attributes(
+                'Manifest-Version': '1.0',
+                'Built-By': 'fybug/风雨bu改',
+                'Created-By': 'IntelliJ IDEA'
+        )
+    }
+    archiveFileName = 'PDFileWatch_all.jar'
+    // 打包编译输出
+    from sourceSets.main.output
+    // 打包源码
+    from sourceSets.main.allSource
+    from {
+        // implementation 相关的引入解压并打包入新的jar中
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task PDFileWatch_sources(type: Jar) {
+    destinationDirectory = file('jar')
+    manifest {
+        attributes(
+                'Manifest-Version': '1.0',
+                'Built-By': 'fybug/风雨bu改',
+                'Created-By': 'IntelliJ IDEA'
+        )
+    }
+    archiveFileName = 'PDFileWatch_sources.jar'
+    // 打包源码
+    from sourceSets.main.allSource
+}
+
+task release {
+    dependsOn clean
+    dependsOn PDFileWatch_all
+    dependsOn PDFileWatch_bin
+    dependsOn PDFileWatch
+    dependsOn PDFileWatch_sources
 }
